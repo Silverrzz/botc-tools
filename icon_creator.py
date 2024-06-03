@@ -155,3 +155,6 @@ def process():
     image_url = data["image_url"]
     team = data["team"]
     return json.dumps(process_character(image_url, team))
+
+app.run(port=5000)
+
