@@ -1,4 +1,4 @@
-import flask
+
 import requests
 import cv2
 import numpy as np
@@ -142,14 +142,20 @@ def process_character(image_url, team):
     else:
         return [image64(good_image), image64(evil_image)]
     
+import flask
+from flask_cors import CORS, cross_origin
 
 app = flask.Flask(__name__)
+CORS(app)
+app.config['CORS_HEADERS'] = 'Content-Type'
 
 @app.route('/')
+@cross_origin()
 def hello_world():
     return 'Hello from Flask!'
 
 @app.route("/process", methods=["POST"])
+@cross_origin()
 def process():
     data = flask.request.get_json()
     image_url = data["image_url"]
