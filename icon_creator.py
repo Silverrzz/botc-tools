@@ -154,8 +154,20 @@ def process():
     data = flask.request.get_json()
     image_url = data["image_url"]
     team = data["team"]
-    return json.dumps(process_character(image_url, team))
+
+    #allow cross origin requests
+    response = flask.make_response()
+    response.headers["Access-Control-Allow-Origin"] = "*"
+
+    #process the image
+    images = process_character(image_url, team)
+
+    #return the images
+    response.data = json.dumps(images)
+    return response
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
+
+
 
