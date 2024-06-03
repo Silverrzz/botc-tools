@@ -143,19 +143,14 @@ def process_character(image_url, team):
         return [image64(good_image), image64(evil_image)]
     
 import flask
-from flask_cors import CORS, cross_origin
 
 app = flask.Flask(__name__)
-CORS(app)
-app.config['CORS_HEADERS'] = 'Content-Type'
 
 @app.route('/')
-@cross_origin()
 def hello_world():
     return 'Hello from Flask!'
 
 @app.route("/process", methods=["POST", "OPTIONS"])
-@cross_origin()
 def process():
 
     if flask.request.method == "OPTIONS":
