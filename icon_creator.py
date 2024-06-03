@@ -154,22 +154,35 @@ app.config['CORS_HEADERS'] = 'Content-Type'
 def hello_world():
     return 'Hello from Flask!'
 
-@app.route("/process", methods=["POST"])
+@app.route("/process", methods=["POST", "OPTIONS"])
 @cross_origin()
 def process():
-    data = flask.request.get_json()
-    image_url = data["image_url"]
-    team = data["team"]
 
-    #allow cross origin requests
+    if flask.request.method == "OPTIONS":
+        return build_cors_preflight_response()
+    elif flask.request.method == "POST":
+    
+        data = flask.request.get_json()
+        image_url = data["image_url"]
+        team = data["team"]
+
+        #process the image
+        images = process_character(image_url, team)
+
+        #return the images
+        return corsify_actual_response(flask.jsonify(images))
+    
+    return "Invalid request"
+
+def build_cors_preflight_response():
     response = flask.make_response()
-    response.headers["Access-Control-Allow-Origin"] = "*"
+    response.headers.add("Access-Control-Allow-Origin", "*")
+    response.headers.add('Access-Control-Allow-Headers', "*")
+    response.headers.add('Access-Control-Allow-Methods', "*")
+    return response
 
-    #process the image
-    images = process_character(image_url, team)
-
-    #return the images
-    response.data = json.dumps(images)
+def corsify_actual_response(response):
+    response.headers.add("Access-Control-Allow-Origin", "*")
     return response
 
 if __name__ == '__main__':
